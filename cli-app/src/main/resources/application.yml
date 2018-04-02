@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: dev
+  
+logging:
+  level:
+    ROOT: ERROR
+    org.springframework: ERROR
+    com.example: INFO
+  file: ./logs/application.log

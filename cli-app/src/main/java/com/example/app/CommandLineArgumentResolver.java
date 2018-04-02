@@ -7,6 +7,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class CommandLineArgumentResolver implements ArgumentResolver {
 
@@ -34,8 +37,7 @@ public class CommandLineArgumentResolver implements ArgumentResolver {
             CommandLine cl = new DefaultParser().parse(options, args);
 
             if (cl.hasOption("?")) {
-                HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp("[command --type=<command type>]", options);
+                showUsage(options);
             }
 
             String arg1 = cl.getOptionValue("a1");
@@ -43,10 +45,14 @@ public class CommandLineArgumentResolver implements ArgumentResolver {
             return new Argument(arg1, arg2);
 
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("Illegal Arguments", e);
+            showUsage(options);
             return new Argument("-", "-");
         }
-
     }
 
+    private void showUsage(Options options) {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("[command --type=<command type>]", options);
+    }
 }
